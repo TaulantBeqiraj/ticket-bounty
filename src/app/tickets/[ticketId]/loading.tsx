@@ -1,4 +1,4 @@
-import { Spinner } from "@/features/components/spinner"
+import { Spinner } from "@/components/spinner"
 
 const Loading = () => {
   return(
