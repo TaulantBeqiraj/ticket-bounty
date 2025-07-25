@@ -1,14 +1,49 @@
-import { LucideKanban } from 'lucide-react'
+'use client';
+
+import { LucideKanban, LucideLogOut } from 'lucide-react'
 import Link from 'next/link'
-import React from 'react'
-import { homePath, ticketsPath } from '@/paths'
+import React, { useEffect, useState } from 'react'
+import { homePath, signInPath, signUpPath, ticketsPath } from '@/paths'
 import { ThemeSwitcher } from './theme/theme-switcher'
 import { buttonVariants } from './ui/button'
+import { SubmitButton } from './form/submit-button'
+import { signOut } from '@/features/auth/actions/sign-out'
+import { useAuth } from '@/features/auth/hooks/use-auth';
 
 const Header = () => {
+  const {user, isFetched} = useAuth();
+
+  const navItems = user ? (
+    <>
+      <Link 
+        href={ticketsPath()} 
+        className={buttonVariants({variant: "default"})}
+      >
+        Tickets
+      </Link>
+      <form action={signOut}>
+        <SubmitButton label='Sign Out' icon={<LucideLogOut />}/>
+      </form>
+    </>
+  ) : (
+    <>
+      <Link href={signUpPath()} className={buttonVariants({ variant: "outline"})}>
+        Sign Up
+      </Link>
+      <Link href={signInPath()} className={buttonVariants({ variant: "default"})}>
+        Sign In
+      </Link>
+
+    </>
+  )
+
+  if(!isFetched) {
+    return null;
+  }
+
   return (
     <nav 
-      className="supports-backdrop-blur:bg-background/60
+      className="animate-header-from-top supports-backdrop-blur:bg-background/60
       fixed left-0 right-0 top-0 z-20 
       flex justify-between py-2.5 px-5 w-full
       border-b backdrop-blur"
@@ -24,12 +59,7 @@ const Header = () => {
       </div>
       <div className='flex gap-x-2'>
         <ThemeSwitcher />
-        <Link 
-          href={ticketsPath()} 
-          className={buttonVariants({variant: "default"})}
-        >
-          Tickets
-        </Link>
+        {navItems}
       </div>
     </nav>
   )

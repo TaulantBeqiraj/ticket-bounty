@@ -1,9 +1,10 @@
-import { Ticket } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import clsx from "clsx";
-import { LucideMoreVertical, LucidePencil, LucideSquareArrowOutUpRight, LucideTrash } from "lucide-react";
+import { LucideMoreVertical, LucidePencil, LucideSquareArrowOutUpRight } from "lucide-react";
 import Link from "next/link"
 import { Button } from "@/components/ui/button";
 import { ticketEditPath, ticketPath } from "@/paths"
+import { toCurrencyFromCent } from "@/utils/currency";
 import { 
   Card,
   CardContent,
@@ -11,15 +12,26 @@ import {
   CardHeader,
   CardTitle} from "../../../components/ui/card";
 import { TICKET_ICONS} from "../constants"
-import { toCurrencyFromCent } from "@/utils/currency";
 import { TicketMoreMenu } from "./ticket-more-menu";
+import { getAuth } from "@/features/auth/actions/get-auth";
+import { isOwner } from "@/features/auth/utils/is-owner";
 
 type TicketProps = {
-  ticket: Ticket;
+  ticket: Prisma.TicketGetPayload<{
+    include: {
+      user: {
+        select: {
+          username: true
+        }
+      }
+    }
+  }>;
   isDetail?: boolean;
 };
 
-const TicketItem = ({ticket, isDetail}: TicketProps) => {
+const TicketItem = async ({ticket, isDetail}: TicketProps) => {
+  const {user} = await getAuth();
+  const isTicketOwner = isOwner(user, ticket)
 
   const detailButton = (      
     <Button asChild variant="outline" size="icon">
@@ -36,13 +48,13 @@ const TicketItem = ({ticket, isDetail}: TicketProps) => {
     </Button>
   );
 
-  const moreMenu = <TicketMoreMenu 
+  const moreMenu = isTicketOwner ? (<TicketMoreMenu 
     ticket={ticket} 
     trigger={
       <Button variant="outline" size="icon" >
         <LucideMoreVertical className="h-4 w-4"/>
       </Button>
-  }/>
+  }/>) : null;
 
   return (
     <div className={clsx("flex w-full gap-x-1",
@@ -64,7 +76,7 @@ const TicketItem = ({ticket, isDetail}: TicketProps) => {
           </span>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <p className="text-sm text-muted-foreground">{ticket.deadline}</p>
+          <p className="text-sm text-muted-foreground">{ticket.deadline} by {ticket.user.username}</p>
           <p className="text-sm text-muted-foreground">{toCurrencyFromCent(ticket.bounty)}</p>
         </CardFooter>
       </Card>
