@@ -3,7 +3,7 @@ import { Placeholder } from "@/components/placeholder"
 import { Button } from "@/components/ui/button"
 import { ticketsPath } from "@/paths"
 
-export default function notFound() {
+export default function NotFound() {
   return (
       <Placeholder 
         label={"Ticket not found"}

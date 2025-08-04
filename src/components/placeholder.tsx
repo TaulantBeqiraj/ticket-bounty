@@ -1,10 +1,13 @@
 import { LucideMessageSquareWarning } from 'lucide-react';
 import React, { cloneElement } from 'react'
+import { Button } from './ui/button';
+import { ticketsPath } from '@/paths';
+import Link from 'next/link';
 
 type PlacehorderProps = {
   label?: string;
   icon?: React.ReactElement<any>;
-  button?: any
+  button?: React.ReactElement<any>
 }
 
 const Placeholder = ({label, icon = <LucideMessageSquareWarning />, button}: PlacehorderProps) => {
@@ -15,7 +18,10 @@ const Placeholder = ({label, icon = <LucideMessageSquareWarning />, button}: Pla
       })}
       <h2 className='text-center'>{label}</h2>
       
-      {cloneElement(button, {className: "h-10"})}
+      {/* {cloneElement(button, {className: "h-10"})} */}
+      <Button variant="outline" className="h-10" asChild>
+        <Link href={ticketsPath()}>Go to tickets</Link>
+      </Button>
     </div>
   )
 }

@@ -8,3 +8,5 @@ export const signUpPath = () => "/sign-up";
 export const signInPath = () => "/sign-in";
 export const forgotPassword = () => "/forgot-password";
 
+export const accountProfilePage = () => "/account/profile";
+export const accountPasswordPage = () => "/account/password";

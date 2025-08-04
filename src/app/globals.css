@@ -71,6 +71,8 @@
 
   --animate-header-from-top: header-from-top 0.5s ease-out;
 
+  --animate-sidebar-from-left: sidebar-from-left 0.5s ease-in;
+
   @keyframes fade-from-top {
     0% {
       opacity: 0;
@@ -90,6 +92,16 @@
 
     100% {
       transform: translateY(0);
+    }
+  }
+
+  @keyframes sidebar-from-left {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(0);
     }
   }
 

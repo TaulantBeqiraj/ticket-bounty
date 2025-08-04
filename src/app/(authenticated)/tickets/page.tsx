@@ -5,8 +5,15 @@ import { Heading } from "@/components/heading";
 import { Spinner } from "@/components/spinner";
 import { TicketList } from "@/features/ticket/components/ticket-list";
 import { TicketUpsertForm } from "@/features/ticket/components/ticket-upsert-form";
+import { getAuth } from "@/features/auth/actions/get-auth";
+import { SearchParams } from "@/features/ticket/search-params";
 
-const TicketsPage = () => {
+type TicketsPageProps = {
+  searchParams: Promise<SearchParams>;
+}
+
+const TicketsPage = async ({searchParams}: TicketsPageProps) => {
+  const {user} = await getAuth();
   return (
     <div className="flex-1 flex flex-col gap-y-8">
       <Heading title="Tickets" description="All your tickets at one place"/>
@@ -19,7 +26,7 @@ const TicketsPage = () => {
       />
 
       <Suspense fallback={<Spinner />}>
-        <TicketList />
+        <TicketList userId={user?.id} searchParams={await searchParams}/>
       </Suspense>
     </div>
   )
